@@ -9,3 +9,9 @@ class SimpleEmailService() : EmailService {
         println("Email sent to $receiver with message = '$message'")
     }
 }
+
+class SendGridEmailService() : EmailService {
+    override fun sendEmail(message: String, receiver: String) {
+        println("SendGrid sent to $receiver with message = '$message'")
+    }
+}

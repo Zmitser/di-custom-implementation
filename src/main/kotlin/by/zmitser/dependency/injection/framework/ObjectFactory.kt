@@ -1,11 +1,16 @@
 package by.zmitser.dependency.injection.framework
 
-import Config
-import KotlinConfig
+import by.zmitser.dependency.injection.example.EmailService
+import by.zmitser.dependency.injection.example.SendGridEmailService
 
-class ObjectFactory private constructor(private val config: Config = KotlinConfig("by.zmitser.dependency.injection.example")) {
+open class ObjectFactory<T> private constructor(
+    private val config: Config<T> = KotlinConfig(
+        "by.zmitser.dependency.injection.example",
+        mutableMapOf(EmailService::class.java as Class<T> to SendGridEmailService::class.java as Class<T>)
+    )
+) {
 
-    fun <T> createObject(type: Class<T>): T {
+    fun createObject(type: Class<T>): T {
         var implClass: Class<out T> = type
         if (type.isInterface) {
             implClass = config.getImplClass(type)
@@ -14,7 +19,7 @@ class ObjectFactory private constructor(private val config: Config = KotlinConfi
     }
 
     companion object {
-        val instance = ObjectFactory()
+        fun <T> getInstance() = ObjectFactory<T>()
     }
 }
 
