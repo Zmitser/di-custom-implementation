@@ -1,9 +1,16 @@
 package by.zmitser.dependency.injection.framework
 
-class ObjectFactory private constructor(private val config: Config = KotlinConfig()) {
+import Config
+import KotlinConfig
+
+class ObjectFactory private constructor(private val config: Config = KotlinConfig("by.zmitser.dependency.injection.example")) {
 
     fun <T> createObject(type: Class<T>): T {
-       return config.getImplClass(type).getDeclaredConstructor().newInstance()
+        var implClass: Class<out T> = type
+        if (type.isInterface) {
+            implClass = config.getImplClass(type)
+        }
+        return implClass.getDeclaredConstructor().newInstance()
     }
 
     companion object {
